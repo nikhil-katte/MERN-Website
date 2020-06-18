@@ -5,9 +5,10 @@ var expressJwt = require("express-jwt");
 exports.signup = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    
     return res.status(422).json({
-      errorMsg: errors.array()[0].msg,
-      error: errors.array()[0].param,
+      errorMsg: errors.array()[0].param,
+      error: errors.array()[0].msg,
     });
   }
   const user = new User(req.body);
@@ -70,20 +71,20 @@ exports.isSignedIn = expressJwt({
 });
 
 //custom middle ware
-exports.isAuthenticated = (req, res ,next)=>{
-  let checker =  req.profile && req.auth && req.profile._id == req.auth._id
-  if(!checker){
+exports.isAuthenticated = (req, res, next) => {
+  let checker = req.profile && req.auth && req.profile._id == req.auth._id;
+  if (!checker) {
     return res.status(403).json({
-      error:"ACCESS DENIED"
-    })
+      error: "ACCESS DENIED",
+    });
   }
   next();
-}
-exports.isAdmin = (req, res ,next)=>{
-  if (req.profile.role === 0){
+};
+exports.isAdmin = (req, res, next) => {
+  if (req.profile.role === 0) {
     res.status(403).json({
-      error: "You are not admin "
-    })
+      error: "You are not admin ",
+    });
   }
   next();
-}
+};
